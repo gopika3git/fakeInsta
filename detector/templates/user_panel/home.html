@@ -1,0 +1,116 @@
+{% extends "user_panel/_base.html" %}
+{% block title %}Quick Account Check{% endblock %}
+{% block page_title %}Quick Profile Check{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <h2>Manual Feature-Based Prediction</h2>
+    <span class="mono text-muted" style="font-size: 11px;">XGBoost Classifier</span>
+  </div>
+  <div class="panel-body">
+    <p class="text-muted mb-3" style="font-size: 13px;">
+      Enter the 11 raw features of an Instagram account below. The XGBoost model will predict whether
+      it is likely fake or real.
+    </p>
+
+    <form method="post">{% csrf_token %}
+      <div class="form-row">
+        <div class="form-group">
+          <label>Has Profile Picture? <span class="req">*</span></label>
+          <select name="profile_pic" class="form-control" required>
+            <option value="1" {% if submitted.profile_pic == '1' %}selected{% endif %}>1 — Yes</option>
+            <option value="0" {% if submitted.profile_pic == '0' %}selected{% endif %}>0 — No</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nums/Length Username (0–1)</label>
+          <input type="number" step="0.01" min="0" max="1" name="nums_length_username"
+                 class="form-control" value="{{ submitted.nums_length_username|default:'0' }}" required>
+          <div class="help">Ratio of digits in username (e.g. user12 → 0.33)</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name — Word Count</label>
+          <input type="number" min="0" name="fullname_words" class="form-control"
+                 value="{{ submitted.fullname_words|default:'0' }}" required>
+        </div>
+        <div class="form-group">
+          <label>Nums/Length Fullname (0–1)</label>
+          <input type="number" step="0.01" min="0" max="1" name="nums_length_fullname"
+                 class="form-control" value="{{ submitted.nums_length_fullname|default:'0' }}" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Name == Username?</label>
+          <select name="name_equals_username" class="form-control" required>
+            <option value="0" {% if submitted.name_equals_username == '0' %}selected{% endif %}>0 — No</option>
+            <option value="1" {% if submitted.name_equals_username == '1' %}selected{% endif %}>1 — Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Description / Bio Length (chars)</label>
+          <input type="number" min="0" name="description_length" class="form-control"
+                 value="{{ submitted.description_length|default:'0' }}" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Has External URL?</label>
+          <select name="external_url" class="form-control" required>
+            <option value="0" {% if submitted.external_url == '0' %}selected{% endif %}>0 — No</option>
+            <option value="1" {% if submitted.external_url == '1' %}selected{% endif %}>1 — Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Is Account Private?</label>
+          <select name="private" class="form-control" required>
+            <option value="0" {% if submitted.private == '0' %}selected{% endif %}>0 — No</option>
+            <option value="1" {% if submitted.private == '1' %}selected{% endif %}>1 — Yes</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Number of Posts</label>
+          <input type="number" min="0" name="posts" class="form-control"
+                 value="{{ submitted.posts|default:'0' }}" required>
+        </div>
+        <div class="form-group">
+          <label>Number of Followers</label>
+          <input type="number" min="0" name="followers" class="form-control"
+                 value="{{ submitted.followers|default:'0' }}" required>
+        </div>
+        <div class="form-group">
+          <label>Number Following</label>
+          <input type="number" min="0" name="follows" class="form-control"
+                 value="{{ submitted.follows|default:'0' }}" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn">⚡ Run Detection</button>
+    </form>
+  </div>
+</div>
+
+{% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+
+{% if result %}
+<div class="verdict-box {{ result.verdict|lower }}">
+  <div class="label">XGBoost Verdict</div>
+  <div class="verdict">{{ result.verdict }}</div>
+  <div class="meta">Fake-probability: {{ result.probability|floatformat:3 }}</div>
+</div>
+
+<div class="alert info">
+  <strong>Note:</strong> This is a quick check based on values you entered. For an official
+  investigation by the police, use <a href="{% url 'user_post_id' %}">Post ID for Verification</a>.
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "admin_panel/_base.html" %}
+{% block title %}Complaint Detail{% endblock %}
+{% block page_title %}Complaint Detail{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header"><h2>{{ c.subject }}</h2><span class="badge {{ c.status|lower }}">{{ c.status }}</span></div>
+  <div class="panel-body">
+    <div class="form-row">
+      <div><div class="mono text-muted" style="font-size: 11px;">FROM</div>
+        <strong>{{ c.user.full_name }}</strong> ({{ c.user.email }})</div>
+      <div><div class="mono text-muted" style="font-size: 11px;">FILED</div>
+        <span class="mono">{{ c.created_at|date:"d M Y, H:i" }}</span></div>
+    </div>
+    <hr class="divider">
+    <div class="mono text-muted" style="font-size: 11px;">MESSAGE</div>
+    <p style="white-space: pre-wrap; padding: 12px; background: var(--bg-tertiary); border-left: 2px solid var(--amber); margin-top: 6px;">{{ c.message }}</p>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-header"><h2>Admin Response</h2></div>
+  <div class="panel-body">
+    <form method="post">{% csrf_token %}
+      <div class="form-group">
+        <label>Reply</label>
+        <textarea name="reply" class="form-control" rows="4">{{ c.admin_reply }}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Update Status</label>
+        <select name="status" class="form-control">
+          <option value="OPEN" {% if c.status == 'OPEN' %}selected{% endif %}>Open</option>
+          <option value="REVIEWED" {% if c.status == 'REVIEWED' %}selected{% endif %}>Reviewed</option>
+          <option value="CLOSED" {% if c.status == 'CLOSED' %}selected{% endif %}>Closed</option>
+        </select>
+      </div>
+      <div class="flex-row">
+        <button type="submit" class="btn">Save Response</button>
+        <a href="{% url 'admin_complaints' %}" class="btn btn-secondary">Back</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

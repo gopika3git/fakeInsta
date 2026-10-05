@@ -1,0 +1,8 @@
+{% extends "common/base.html" %}
+{% block brand_title %}Officer Console{% endblock %}
+{% block brand_role %}Field Investigator{% endblock %}
+{% block nav %}
+  <a href="{% url 'police_home' %}"><span class="icon">⌂</span> Home</a>
+  <a href="{% url 'police_verify_id' %}"><span class="icon">🔍</span> Verify ID</a>
+  <a href="{% url 'police_pending' %}"><span class="icon">⏳</span> Pending Cases</a>
+{% endblock %}

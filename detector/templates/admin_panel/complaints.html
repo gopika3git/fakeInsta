@@ -1,0 +1,39 @@
+{% extends "admin_panel/_base.html" %}
+{% block title %}Complaints{% endblock %}
+{% block page_title %}Citizen Complaints{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <h2>Inbox ({{ complaints.count }})</h2>
+  </div>
+  <div class="panel-body" style="padding: 0;">
+    <table class="dossier">
+      <thead>
+        <tr>
+          <th>Filed</th>
+          <th>Citizen</th>
+          <th>Subject</th>
+          <th>Status</th>
+          <th style="text-align: right;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in complaints %}
+        <tr>
+          <td class="mono text-muted" style="font-size: 11px;">{{ c.created_at|date:"d M Y, H:i" }}</td>
+          <td>{{ c.user.full_name }}<br><span class="mono text-muted" style="font-size: 11px;">@{{ c.user.username }}</span></td>
+          <td>{{ c.subject }}</td>
+          <td><span class="badge {{ c.status|lower }}">{{ c.status }}</span></td>
+          <td style="text-align: right;">
+            <a href="{% url 'admin_complaint_reply' c.pk %}" class="btn btn-outline btn-sm">Open</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="center text-muted" style="padding: 40px;">No complaints filed.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

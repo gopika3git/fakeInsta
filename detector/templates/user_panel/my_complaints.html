@@ -1,0 +1,31 @@
+{% extends "user_panel/_base.html" %}
+{% block title %}My Complaints{% endblock %}
+{% block page_title %}My Complaints{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <h2>Complaints I Filed ({{ complaints.count }})</h2>
+    <a href="{% url 'user_complaint' %}" class="btn btn-sm">+ New Complaint</a>
+  </div>
+  <div class="panel-body">
+    {% for c in complaints %}
+      <div style="border: 1px solid var(--border); border-left: 3px solid var(--amber); padding: 16px; margin-bottom: 12px; background: var(--bg-tertiary); border-radius: 3px;">
+        <div class="flex-between">
+          <strong>{{ c.subject }}</strong>
+          <span class="badge {{ c.status|lower }}">{{ c.status }}</span>
+        </div>
+        <div class="mono text-muted" style="font-size: 11px; margin-top: 4px;">Filed: {{ c.created_at|date:"d M Y, H:i" }}</div>
+        <p style="margin-top: 10px; white-space: pre-wrap;">{{ c.message }}</p>
+        {% if c.admin_reply %}
+          <hr class="divider">
+          <div class="mono text-amber" style="font-size: 11px; letter-spacing: 1px;">▸ ADMIN RESPONSE</div>
+          <p style="margin-top: 6px; padding: 10px; background: var(--bg-card); border-left: 2px solid var(--green);">{{ c.admin_reply }}</p>
+        {% endif %}
+      </div>
+    {% empty %}
+      <div class="center text-muted" style="padding: 40px;">No complaints filed.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

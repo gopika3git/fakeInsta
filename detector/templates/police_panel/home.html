@@ -1,0 +1,47 @@
+{% extends "police_panel/_base.html" %}
+{% block title %}Officer Dashboard{% endblock %}
+{% block page_title %}Officer Dashboard{% endblock %}
+
+{% block content %}
+<div class="stat-grid">
+  <div class="stat-card"><div class="label">Pending in Queue</div><div class="value">{{ pending.count }}</div></div>
+  <div class="stat-card success"><div class="label">My Verifications</div><div class="value">{{ my_count }}</div></div>
+  <div class="stat-card info"><div class="label">Badge No</div><div class="value mono" style="font-size: 18px;">{{ request.session.badge_no }}</div></div>
+</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <h2>Cases Awaiting Investigation</h2>
+  </div>
+  <div class="panel-body" style="padding: 0;">
+    <table class="dossier">
+      <thead>
+        <tr>
+          <th>Case No</th>
+          <th>Citizen</th>
+          <th>Instagram ID</th>
+          <th>Reason</th>
+          <th>Filed</th>
+          <th style="text-align: right;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in pending %}
+        <tr>
+          <td class="case-no">{{ r.case_no }}</td>
+          <td>{{ r.user.full_name }}</td>
+          <td class="mono">@{{ r.instagram_id }}</td>
+          <td style="max-width: 280px;">{{ r.reason|truncatechars:60|default:"—" }}</td>
+          <td class="mono text-muted" style="font-size: 11px;">{{ r.created_at|date:"d M H:i" }}</td>
+          <td style="text-align: right;">
+            <a href="{% url 'police_analyze' r.pk %}" class="btn btn-sm">🔍 Analyze</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="center text-muted" style="padding: 40px;">All cases cleared. No pending investigations.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

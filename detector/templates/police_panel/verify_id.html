@@ -1,0 +1,40 @@
+{% extends "police_panel/_base.html" %}
+{% block title %}Verify ID{% endblock %}
+{% block page_title %}Verify Instagram ID{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header"><h2>Manual Lookup (XGBoost + Apify)</h2></div>
+  <div class="panel-body">
+    <form method="post">{% csrf_token %}
+      <div class="form-group">
+        <label>Instagram Username</label>
+        <input type="text" name="instagram_id" class="form-control" value="{{ instagram_id }}" required>
+        <div class="help">Without the @ symbol. Live profile fetched via Apify.</div>
+      </div>
+      <button type="submit" class="btn">🔍 Investigate</button>
+    </form>
+  </div>
+</div>
+
+{% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+
+{% if result %}
+<div class="verdict-box {{ result.verdict|lower }}">
+  <div class="label">Verdict for @{{ result.instagram_id }}</div>
+  <div class="verdict">{{ result.verdict }}</div>
+  <div class="meta">Fake-probability: {{ result.probability|floatformat:3 }}</div>
+</div>
+
+<div class="panel">
+  <div class="panel-header"><h2>Feature Vector</h2></div>
+  <div class="panel-body">
+    <div class="feat-grid">
+      {% for k, v in result.features.items %}{% if k != 'meta' %}
+        <div class="feat"><div class="k">{{ k }}</div><div class="v">{{ v }}</div></div>
+      {% endif %}{% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

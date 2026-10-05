@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cyber Investigation Portal — Fake Instagram Account Detection</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+</head>
+<body class="landing">
+  <nav class="landing-nav">
+    <div class="brand">
+      <div class="brand-seal">🛡️</div>
+      Cyber Investigation Department
+    </div>
+    <div class="flex-row">
+      <a href="{% url 'user_login' %}" class="btn btn-outline btn-sm">Citizen Login</a>
+      <a href="{% url 'user_register' %}" class="btn btn-sm">Register</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="case-stamp">⚠ Classified · Restricted Access System</div>
+    <h1>Fake Instagram Account<br><span class="accent">Detection &amp; Investigation</span></h1>
+    <p class="lead">
+      A secure investigation portal for citizens, police officers and administrators to
+      flag, investigate and verify suspicious Instagram accounts. Powered by an XGBoost
+      machine-learning classifier and live profile scraping.
+    </p>
+  </section>
+
+  <section class="portal-grid">
+    <div class="portal-card">
+      <div class="icon">👮</div>
+      <h3>Administrator</h3>
+      <p>Manage officers, oversee investigations, review citizen complaints and audit verification logs.</p>
+      <a href="{% url 'admin_login' %}" class="btn btn-sm">Admin Console →</a>
+    </div>
+
+    <div class="portal-card red">
+      <div class="icon">🔍</div>
+      <h3>Police Officer</h3>
+      <p>Investigate flagged Instagram IDs, run XGBoost analysis and issue official case reports.</p>
+      <a href="{% url 'police_login' %}" class="btn btn-danger btn-sm">Officer Login →</a>
+    </div>
+
+    <div class="portal-card green">
+      <div class="icon">👤</div>
+      <h3>Registered Citizen</h3>
+      <p>Submit suspicious accounts for investigation, run quick checks, file complaints and download reports.</p>
+      <a href="{% url 'user_login' %}" class="btn btn-sm">Citizen Portal →</a>
+    </div>
+  </section>
+
+  <div class="hero" style="margin-top: 60px;">
+    <hr class="divider" style="max-width: 600px; margin: 0 auto 30px;">
+    <p class="mono text-muted" style="font-size: 11px; letter-spacing: 2px;">
+      SYSTEM v1.0 · XGBOOST CLASSIFIER · APIFY LIVE-SCRAPE INTEGRATION
+    </p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{% extends "user_panel/_base.html" %}
+{% block title %}Post ID for Verification{% endblock %}
+{% block page_title %}Submit ID for Police Verification{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header"><h2>File a Verification Request</h2></div>
+  <div class="panel-body">
+    <p class="text-muted mb-3" style="font-size: 13px;">
+      Submit a suspicious Instagram username. A case file is created and forwarded to police
+      officers for live XGBoost-based investigation. You will be able to download the official
+      report once the case is closed.
+    </p>
+    <form method="post">{% csrf_token %}
+      <div class="form-group">
+        <label>Instagram Username <span class="req">*</span></label>
+        <input type="text" name="instagram_id" class="form-control" placeholder="suspicious_user (without @)" required>
+      </div>
+      <div class="form-group">
+        <label>Reason / Context</label>
+        <textarea name="reason" class="form-control" rows="3"
+                  placeholder="Why do you think this account is fake? Any context for the officer?"></textarea>
+      </div>
+      <button type="submit" class="btn">📤 Submit to Police</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

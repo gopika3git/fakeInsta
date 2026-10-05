@@ -1,0 +1,10 @@
+{% extends "common/base.html" %}
+{% block brand_title %}Citizen Portal{% endblock %}
+{% block brand_role %}Registered User{% endblock %}
+{% block nav %}
+  <a href="{% url 'user_home' %}"><span class="icon">⌂</span> Home (Quick Check)</a>
+  <a href="{% url 'user_post_id' %}"><span class="icon">📤</span> Post ID for Verification</a>
+  <a href="{% url 'user_my_requests' %}"><span class="icon">📋</span> My Requests</a>
+  <a href="{% url 'user_complaint' %}"><span class="icon">📝</span> File Complaint</a>
+  <a href="{% url 'user_my_complaints' %}"><span class="icon">📨</span> My Complaints</a>
+{% endblock %}

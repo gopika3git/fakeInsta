@@ -1,0 +1,100 @@
+{% extends "police_panel/_base.html" %}
+{% block title %}Analyze Case{% endblock %}
+{% block page_title %}Investigate Case{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <h2>Case File · {{ req.case_no }}</h2>
+    <span class="badge {{ req.status|lower }}">{{ req.status }}</span>
+  </div>
+  <div class="panel-body">
+    <div class="form-row">
+      <div><div class="mono text-muted" style="font-size: 11px;">FILED BY</div>
+        <strong>{{ req.user.full_name }}</strong><br>
+        <span class="mono" style="font-size: 12px;">{{ req.user.email }} · {{ req.user.phone }}</span></div>
+      <div><div class="mono text-muted" style="font-size: 11px;">SUBJECT</div>
+        <strong class="mono text-amber" style="font-size: 16px;">@{{ req.instagram_id }}</strong></div>
+      <div><div class="mono text-muted" style="font-size: 11px;">FILED ON</div>
+        <span class="mono">{{ req.created_at|date:"d M Y, H:i" }}</span></div>
+    </div>
+    {% if req.reason %}
+      <hr class="divider">
+      <div class="mono text-muted" style="font-size: 11px;">CITIZEN'S REASON</div>
+      <p>{{ req.reason }}</p>
+    {% endif %}
+  </div>
+</div>
+
+{% if error %}<div class="alert error"><strong>Live analysis failed:</strong> {{ error }}</div>{% endif %}
+
+{% if result %}
+<div class="verdict-box {{ result.verdict|lower }}">
+  <div class="label">XGBoost Live Analysis</div>
+  <div class="verdict">{{ result.verdict }}</div>
+  <div class="meta">Fake-probability: {{ result.probability|floatformat:3 }}</div>
+</div>
+
+<div class="panel">
+  <div class="panel-header"><h2>Feature Vector</h2></div>
+  <div class="panel-body">
+    <div class="feat-grid">
+      {% for k, v in result.features.items %}{% if k != 'meta' %}
+        <div class="feat"><div class="k">{{ k }}</div><div class="v">{{ v }}</div></div>
+      {% endif %}{% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if req.status == 'PENDING' %}
+<div class="panel">
+  <div class="panel-header"><h2>Finalize Verdict</h2></div>
+  <div class="panel-body">
+    <form method="post">{% csrf_token %}
+      <input type="hidden" name="action" value="finalize">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Verdict</label>
+          <select name="verdict" class="form-control" required>
+            <option value="">— select —</option>
+            <option value="FAKE" {% if result.verdict == 'FAKE' %}selected{% endif %}>FAKE</option>
+            <option value="REAL" {% if result.verdict == 'REAL' %}selected{% endif %}>REAL</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Fake Probability (0.0 – 1.0)</label>
+          <input type="number" name="fake_probability" step="0.001" min="0" max="1"
+                 class="form-control"
+                 value="{% if result %}{{ result.probability|floatformat:3 }}{% endif %}">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Officer's Notes</label>
+        <textarea name="notes" class="form-control" rows="3" placeholder="Additional findings, context, decision rationale..."></textarea>
+      </div>
+      <button type="submit" class="btn">✓ Close Case &amp; Issue Report</button>
+    </form>
+  </div>
+</div>
+{% else %}
+<div class="panel">
+  <div class="panel-header"><h2>Case Closed</h2><a href="{% url 'police_report_pdf' req.pk %}" class="btn btn-sm">📄 Download PDF Report</a></div>
+  <div class="panel-body">
+    <div class="form-row">
+      <div><div class="mono text-muted" style="font-size: 11px;">FINAL VERDICT</div>
+        <span class="badge {{ req.verdict|lower }}" style="font-size: 14px;">{{ req.verdict }}</span></div>
+      <div><div class="mono text-muted" style="font-size: 11px;">CONFIDENCE</div>
+        <strong class="mono">{{ req.fake_probability|floatformat:3 }}</strong></div>
+      <div><div class="mono text-muted" style="font-size: 11px;">VERIFIED ON</div>
+        <span class="mono">{{ req.verified_at|date:"d M Y, H:i" }}</span></div>
+    </div>
+    {% if req.officer_notes %}
+      <hr class="divider">
+      <div class="mono text-muted" style="font-size: 11px;">OFFICER'S NOTES</div>
+      <p>{{ req.officer_notes }}</p>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

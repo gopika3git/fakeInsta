@@ -1,0 +1,11 @@
+{% extends "common/base.html" %}
+{% block brand_title %}Cyber Investigation{% endblock %}
+{% block brand_role %}Admin Console{% endblock %}
+{% block nav %}
+  <a href="{% url 'admin_home' %}"><span class="icon">⌂</span> Home</a>
+  <a href="{% url 'admin_add_police' %}"><span class="icon">+</span> Add Officer</a>
+  <a href="{% url 'admin_view_police' %}"><span class="icon">👮</span> View Officers</a>
+  <a href="{% url 'admin_requests' %}"><span class="icon">📋</span> Fake-ID Requests</a>
+  <a href="{% url 'admin_complaints' %}"><span class="icon">📨</span> Complaints</a>
+  <a href="{% url 'admin_verify_id' %}"><span class="icon">🔍</span> Verify ID</a>
+{% endblock %}

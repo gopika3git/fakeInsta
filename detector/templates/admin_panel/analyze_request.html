@@ -1,0 +1,74 @@
+{% extends "admin_panel/_base.html" %}
+{% block title %}Analyze Case{% endblock %}
+{% block page_title %}Independent Analysis{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <h2>Case File · {{ req.case_no }}</h2>
+    <a href="{% url 'admin_requests' %}" class="btn btn-outline btn-sm">← All Cases</a>
+  </div>
+  <div class="panel-body">
+    <div class="form-row">
+      <div><div class="mono text-muted" style="font-size: 11px; letter-spacing: 1px;">FILED BY</div>
+        <strong>{{ req.user.full_name }}</strong> (@{{ req.user.username }})</div>
+      <div><div class="mono text-muted" style="font-size: 11px; letter-spacing: 1px;">INSTAGRAM ID</div>
+        <strong class="mono text-amber">@{{ req.instagram_id }}</strong></div>
+      <div><div class="mono text-muted" style="font-size: 11px; letter-spacing: 1px;">STATUS</div>
+        <span class="badge {{ req.status|lower }}">{{ req.status }}</span>
+        <span class="badge {{ req.verdict|lower }}">{{ req.verdict }}</span></div>
+      <div><div class="mono text-muted" style="font-size: 11px; letter-spacing: 1px;">FILED ON</div>
+        <span class="mono">{{ req.created_at|date:"d M Y, H:i" }}</span></div>
+    </div>
+    {% if req.reason %}
+      <hr class="divider">
+      <div class="mono text-muted" style="font-size: 11px; letter-spacing: 1px;">CITIZEN'S REASON</div>
+      <p>{{ req.reason }}</p>
+    {% endif %}
+  </div>
+</div>
+
+{% if error %}
+  <div class="alert error"><strong>Analysis failed:</strong> {{ error }}</div>
+{% endif %}
+
+{% if result %}
+  <div class="verdict-box {{ result.verdict|lower }}">
+    <div class="label">XGBoost Live Analysis · @{{ req.instagram_id }}</div>
+    <div class="verdict">{{ result.verdict }}</div>
+    <div class="meta">Fake-probability: {{ result.probability|floatformat:3 }} · Confidence: {{ result.probability|floatformat:1 }}</div>
+  </div>
+
+  {% if result.features.meta %}
+    <div class="panel">
+      <div class="panel-header"><h2>Profile Snapshot (Live)</h2></div>
+      <div class="panel-body">
+        <div class="feat-grid">
+          <div class="feat"><div class="k">Username</div><div class="v">@{{ result.features.meta.username }}</div></div>
+          <div class="feat"><div class="k">Full Name</div><div class="v">{{ result.features.meta.full_name|default:"(none)" }}</div></div>
+          <div class="feat"><div class="k">Private</div><div class="v">{{ result.features.meta.is_private|yesno:"Yes,No" }}</div></div>
+          <div class="feat"><div class="k">IG Verified</div><div class="v">{{ result.features.meta.is_verified|yesno:"Yes,No" }}</div></div>
+        </div>
+        {% if result.features.meta.biography %}
+          <hr class="divider">
+          <div class="mono text-muted" style="font-size: 11px;">BIOGRAPHY</div>
+          <p>{{ result.features.meta.biography }}</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="panel">
+    <div class="panel-header"><h2>Feature Vector (XGBoost Inputs)</h2></div>
+    <div class="panel-body">
+      <div class="feat-grid">
+        {% for k, v in result.features.items %}
+          {% if k != 'meta' %}
+          <div class="feat"><div class="k">{{ k }}</div><div class="v">{{ v }}</div></div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

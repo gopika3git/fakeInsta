@@ -1,0 +1,71 @@
+{% extends "admin_panel/_base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block page_title %}Command Dashboard{% endblock %}
+
+{% block content %}
+<div class="stat-grid">
+  <div class="stat-card info">
+    <div class="label">Officers on Duty</div>
+    <div class="value">{{ total_police }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Registered Citizens</div>
+    <div class="value">{{ total_users }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Total Cases</div>
+    <div class="value">{{ total_requests }}</div>
+  </div>
+  <div class="stat-card success">
+    <div class="label">Pending</div>
+    <div class="value">{{ pending_requests }}</div>
+  </div>
+  <div class="stat-card danger">
+    <div class="label">Confirmed Fake</div>
+    <div class="value">{{ fake_count }}</div>
+  </div>
+  <div class="stat-card success">
+    <div class="label">Verified Real</div>
+    <div class="value">{{ real_count }}</div>
+  </div>
+  <div class="stat-card info">
+    <div class="label">Open Complaints</div>
+    <div class="value">{{ open_complaints }}</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <h2>Recent Investigations</h2>
+    <a href="{% url 'admin_requests' %}" class="btn btn-outline btn-sm">View All →</a>
+  </div>
+  <div class="panel-body" style="padding: 0;">
+    <table class="dossier">
+      <thead>
+        <tr>
+          <th>Case No</th>
+          <th>Filed By</th>
+          <th>Instagram ID</th>
+          <th>Status</th>
+          <th>Verdict</th>
+          <th>Filed</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in recent_requests %}
+        <tr>
+          <td class="case-no">{{ r.case_no }}</td>
+          <td>{{ r.user.full_name }}</td>
+          <td class="mono">@{{ r.instagram_id }}</td>
+          <td><span class="badge {{ r.status|lower }}">{{ r.status }}</span></td>
+          <td><span class="badge {{ r.verdict|lower }}">{{ r.verdict }}</span></td>
+          <td class="mono text-muted">{{ r.created_at|date:"d M H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="center text-muted" style="padding: 30px;">No cases on record yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

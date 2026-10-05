@@ -1,0 +1,61 @@
+{% extends "admin_panel/_base.html" %}
+{% block title %}Add Officer{% endblock %}
+{% block page_title %}Enroll New Officer{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <h2>Officer Registration Form</h2>
+  </div>
+  <div class="panel-body">
+    <form method="post">{% csrf_token %}
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" name="full_name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Badge Number <span class="req">*</span></label>
+          <input type="text" name="badge_no" class="form-control" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Police Station <span class="req">*</span></label>
+          <input type="text" name="station" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Rank</label>
+          <input type="text" name="rank" class="form-control" placeholder="e.g. Sub-Inspector">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone <span class="req">*</span></label>
+          <input type="text" name="phone" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
+      </div>
+      <hr class="divider">
+      <p class="mono text-muted mb-2" style="font-size: 11px; letter-spacing: 1.5px;">▸ LOGIN CREDENTIALS</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Username <span class="req">*</span></label>
+          <input type="text" name="username" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Password <span class="req">*</span></label>
+          <input type="password" name="password" class="form-control" required>
+        </div>
+      </div>
+      <div class="flex-row">
+        <button type="submit" class="btn">⊕ Enroll Officer</button>
+        <a href="{% url 'admin_view_police' %}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

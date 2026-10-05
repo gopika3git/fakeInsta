@@ -1,0 +1,52 @@
+{% extends "user_panel/_base.html" %}
+{% block title %}My Requests{% endblock %}
+{% block page_title %}My Verification Requests{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <h2>Cases I Filed ({{ requests.count }})</h2>
+    <a href="{% url 'user_post_id' %}" class="btn btn-sm">+ New Request</a>
+  </div>
+  <div class="panel-body" style="padding: 0;">
+    <table class="dossier">
+      <thead>
+        <tr>
+          <th>Case No</th>
+          <th>Instagram ID</th>
+          <th>Status</th>
+          <th>Verdict</th>
+          <th>Officer</th>
+          <th>Filed</th>
+          <th style="text-align: right;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in requests %}
+        <tr>
+          <td class="case-no">{{ r.case_no }}</td>
+          <td class="mono">@{{ r.instagram_id }}</td>
+          <td><span class="badge {{ r.status|lower }}">{{ r.status }}</span></td>
+          <td><span class="badge {{ r.verdict|lower }}">{{ r.verdict }}</span></td>
+          <td>{% if r.verified_by %}
+                <span class="mono" style="font-size: 12px;">{{ r.verified_by.badge_no }}</span>
+              {% else %}<span class="text-muted">—</span>{% endif %}</td>
+          <td class="mono text-muted" style="font-size: 11px;">{{ r.created_at|date:"d M Y, H:i" }}</td>
+          <td style="text-align: right;">
+            {% if r.status == 'VERIFIED' %}
+              <a href="{% url 'user_download_result' r.pk %}" class="btn btn-sm">📄 Report</a>
+            {% else %}
+              <span class="badge pending">Awaiting Officer</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="center text-muted" style="padding: 40px;">
+          No requests filed yet. <a href="{% url 'user_post_id' %}">File one now →</a>
+        </td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

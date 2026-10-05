@@ -1,0 +1,58 @@
+{% extends "admin_panel/_base.html" %}
+{% block title %}Officers Roster{% endblock %}
+{% block page_title %}Officer Roster{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <h2>All Enrolled Officers ({{ officers.count }})</h2>
+    <a href="{% url 'admin_add_police' %}" class="btn btn-sm">+ Add Officer</a>
+  </div>
+  <div class="panel-body" style="padding: 0;">
+    <table class="dossier">
+      <thead>
+        <tr>
+          <th>Badge</th>
+          <th>Name</th>
+          <th>Rank</th>
+          <th>Station</th>
+          <th>Contact</th>
+          <th>Status</th>
+          <th style="text-align: right;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for o in officers %}
+        <tr>
+          <td class="mono case-no">{{ o.badge_no }}</td>
+          <td>{{ o.full_name }}</td>
+          <td>{{ o.rank|default:"—" }}</td>
+          <td>{{ o.station }}</td>
+          <td class="mono" style="font-size: 12px;">
+            {{ o.phone }}<br>
+            <span class="text-muted">{{ o.email }}</span>
+          </td>
+          <td>
+            {% if o.is_active %}
+              <span class="badge verified">Active</span>
+            {% else %}
+              <span class="badge closed">Inactive</span>
+            {% endif %}
+          </td>
+          <td style="text-align: right;">
+            <a href="{% url 'admin_edit_police' o.pk %}" class="btn btn-outline btn-sm">Edit</a>
+            <a href="{% url 'admin_delete_police' o.pk %}"
+               onclick="return confirm('Remove officer {{ o.full_name }}?');"
+               class="btn btn-danger btn-sm">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7" class="center text-muted" style="padding: 40px;">
+          No officers enrolled. <a href="{% url 'admin_add_police' %}">Add the first one →</a>
+        </td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

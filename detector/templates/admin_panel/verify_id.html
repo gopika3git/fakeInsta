@@ -1,0 +1,54 @@
+{% extends "admin_panel/_base.html" %}
+{% block title %}Verify Instagram ID{% endblock %}
+{% block page_title %}Verify Instagram ID{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header"><h2>Live Profile Lookup (XGBoost + Apify)</h2></div>
+  <div class="panel-body">
+    <form method="post">{% csrf_token %}
+      <div class="form-group">
+        <label>Instagram Username</label>
+        <input type="text" name="instagram_id" class="form-control" placeholder="e.g. instagram"
+               value="{{ instagram_id }}" required>
+        <div class="help">Enter the username (without @). Live data is fetched via Apify.</div>
+      </div>
+      <button type="submit" class="btn">🔍 Run Analysis</button>
+    </form>
+  </div>
+</div>
+
+{% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+
+{% if result %}
+<div class="verdict-box {{ result.verdict|lower }}">
+  <div class="label">Result for @{{ result.instagram_id }}</div>
+  <div class="verdict">{{ result.verdict }}</div>
+  <div class="meta">Fake-probability: {{ result.probability|floatformat:3 }}</div>
+</div>
+
+{% if result.features.meta %}
+<div class="panel">
+  <div class="panel-header"><h2>Profile Snapshot</h2></div>
+  <div class="panel-body">
+    <div class="feat-grid">
+      <div class="feat"><div class="k">Full Name</div><div class="v">{{ result.features.meta.full_name|default:"(none)" }}</div></div>
+      <div class="feat"><div class="k">Private</div><div class="v">{{ result.features.meta.is_private|yesno:"Yes,No" }}</div></div>
+      <div class="feat"><div class="k">IG-Verified</div><div class="v">{{ result.features.meta.is_verified|yesno:"Yes,No" }}</div></div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="panel">
+  <div class="panel-header"><h2>Feature Vector</h2></div>
+  <div class="panel-body">
+    <div class="feat-grid">
+      {% for k, v in result.features.items %}{% if k != 'meta' %}
+        <div class="feat"><div class="k">{{ k }}</div><div class="v">{{ v }}</div></div>
+      {% endif %}{% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

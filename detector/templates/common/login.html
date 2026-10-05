@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }} · Cyber Investigation Portal</title>
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+</head>
+
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-box">
+            <div class="seal">
+                {% if role == 'ADMIN' %}🛡️
+                {% elif role == 'POLICE' %}👮
+                {% else %}👤{% endif %}
+            </div>
+            <h1>{{ title }}</h1>
+            <div class="auth-sub">{{ role }} CREDENTIALS · SECURE LOGIN</div>
+
+            {% if messages %}
+            {% for m in messages %}<div class="alert {{ m.tags }}">{{ m }}</div>{% endfor %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" class="form-control" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Authenticate →</button>
+            </form>
+
+            <div class="auth-foot">
+                {% if role == 'USER' %}
+                New citizen? <a href="{% url 'user_register' %}">Create account</a> ·
+                {% endif %}
+                <a href="{% url 'index' %}">← Back to portal</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

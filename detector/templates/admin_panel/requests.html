@@ -1,0 +1,56 @@
+{% extends "admin_panel/_base.html" %}
+{% block title %}All Cases{% endblock %}
+{% block page_title %}Case Registry{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <h2>All Fake-ID Verification Requests</h2>
+    <span class="mono text-muted" style="font-size: 11px;">Total: {{ requests.count }}</span>
+  </div>
+  <div class="panel-body" style="padding: 0;">
+    <table class="dossier">
+      <thead>
+        <tr>
+          <th>Case No</th>
+          <th>Filed By</th>
+          <th>Instagram ID</th>
+          <th>Status</th>
+          <th>Verdict</th>
+          <th>Officer</th>
+          <th>Filed</th>
+          <th style="text-align: right;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in requests %}
+        <tr>
+          <td class="case-no">{{ r.case_no }}</td>
+          <td>
+            <strong>{{ r.user.full_name }}</strong><br>
+            <span class="mono text-muted" style="font-size: 11px;">@{{ r.user.username }}</span>
+          </td>
+          <td class="mono">@{{ r.instagram_id }}</td>
+          <td><span class="badge {{ r.status|lower }}">{{ r.status }}</span></td>
+          <td><span class="badge {{ r.verdict|lower }}">{{ r.verdict }}</span></td>
+          <td>
+            {% if r.verified_by %}
+              <span class="mono" style="font-size: 12px;">{{ r.verified_by.badge_no }}</span><br>
+              <span class="text-muted" style="font-size: 11px;">{{ r.verified_by.full_name }}</span>
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+          <td class="mono text-muted" style="font-size: 11px;">{{ r.created_at|date:"d M Y, H:i" }}</td>
+          <td style="text-align: right;">
+            <a href="{% url 'admin_analyze_request' r.pk %}" class="btn btn-outline btn-sm">Analyze</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" class="center text-muted" style="padding: 40px;">No cases filed yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

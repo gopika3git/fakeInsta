@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Cyber Investigation Portal{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="badge-icon">🛡️</div>
+      <h1>{% block brand_title %}Cyber Investigation{% endblock %}</h1>
+      <div class="role-tag">{% block brand_role %}Portal{% endblock %}</div>
+    </div>
+
+    <div class="sidebar-section-title">Navigation</div>
+    <nav class="nav">
+      {% block nav %}{% endblock %}
+    </nav>
+
+    <div class="sidebar-section-title">Session</div>
+    <div class="sidebar-user">
+      <div class="label">Logged in as</div>
+      <div class="name">{{ request.session.user_name }}</div>
+    </div>
+    <nav class="nav">
+      <a href="{% url 'logout' %}"><span class="icon">⏏</span> Logout</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="page-title">{% block page_title %}{% endblock %}</div>
+      <div class="page-meta">{% block page_meta %}{% now "d M Y · H:i" %}{% endblock %}</div>
+    </div>
+
+    {% if messages %}
+      {% for m in messages %}
+        <div class="alert {{ m.tags }}">{{ m }}</div>
+      {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+</div>
+</body>
+</html>
